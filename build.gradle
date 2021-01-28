@@ -1,0 +1,113 @@
+import java.util.stream.Collectors
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.github.psxpaul.execfork'
+}
+
+group 'com.stefvic'
+version '1.0.0-SNAPSHOT'
+
+def getPropertyOrDefault(p, d) {
+    return project.getProperties().getOrDefault(p, d)
+}
+
+def benchmarkProps() {
+    def props = project.getProperties().entrySet()
+            .stream()
+            .filter({ e -> e.getKey().startsWith("benchmark") })
+            .collect(Collectors.toMap({ e -> e.getKey() }, { e -> e.getValue() }))
+    props.put("jdk.httpclient.allowRestrictedHeaders", "Connection")
+    return props;
+}
+
+def javaVersion = getPropertyOrDefault("java.version", "15")
+printf("%s\n%s Java version: %s %s\n%s\n",
+        "*".repeat(80),
+        "*".repeat(31),
+        javaVersion,
+        "*".repeat(31),
+        "*".repeat(80))
+
+ext {
+    jettyVersion = '11.0.0'
+    lombockVersion = '1.18.16'
+    apacheHttpClientV4Version = '4.5.13'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("${javaVersion}")
+        vendor = JvmVendorSpec.ADOPTOPENJDK
+        implementation = JvmImplementation.VENDOR_SPECIFIC
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Jetty BOM
+    implementation platform("org.eclipse.jetty:jetty-bom:${jettyVersion}")
+    implementation 'org.eclipse.jetty:jetty-server'
+
+    // Apache HTTP V4
+    implementation 'org.apache.httpcomponents:httpclient'
+
+    // Ok http
+    // define a BOM and its version
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+
+    constraints {
+        compileOnly "org.projectlombok:lombok:${lombockVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombockVersion}"
+
+        implementation "org.apache.httpcomponents:httpclient:${apacheHttpClientV4Version}"
+    }
+}
+
+task embeddedServer(type: com.github.psxpaul.task.JavaExecFork, dependsOn: 'classes') {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.stefvic.java.httpclient.benchmark.BenchmarkJettyHttpServer'
+    minHeapSize = getPropertyOrDefault("benchmark.server.minHeapSize", "512m")
+    maxHeapSize = getPropertyOrDefault("benchmark.server.maxHeapSize", "756m")
+    systemProperties = benchmarkProps()
+    waitForPort = getPropertyOrDefault("benchmark.server.port", "8989") as Integer
+}
+
+task benchmark(dependsOn: 'embeddedServer') {
+    doLast {
+        def clients = [
+                'JDKHttpClient',
+                'JDKHttpAsyncClient',
+                'JDKHttpAsyncClientWithFixedThreadPoolTwo',
+                'ApacheHttpClientV4',
+                'OkHttpClientV4'
+        ]
+
+        clients.each { client ->
+            def mainClass = "com.stefvic.java.httpclient.benchmark.${client}"
+            printf("\n\n%s\n Start: %s \n%s\n\n",
+                    "*".repeat(80),
+                    mainClass,
+                    "*".repeat(80))
+            javaexec {
+                main = mainClass
+                classpath = sourceSets.main.runtimeClasspath
+                minHeapSize = getPropertyOrDefault("benchmark.client.minHeapSize", "512m")
+                maxHeapSize = getPropertyOrDefault("benchmark.client.maxHeapSize", "3072m")
+                systemProperties = benchmarkProps()
+            }
+            printf("\n\n%s\n End: %s \n%s\n\n",
+                    "*".repeat(80),
+                    mainClass,
+                    "*".repeat(80))
+        }
+    }
+}
+
+defaultTasks 'clean', 'benchmark'
