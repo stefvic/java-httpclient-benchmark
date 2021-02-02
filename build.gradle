@@ -34,6 +34,7 @@ ext {
     jettyVersion = '11.0.0'
     lombockVersion = '1.18.16'
     apacheHttpClientV4Version = '4.5.13'
+    reactorNettyVersion = '1.0.3'
 }
 
 java {
@@ -62,11 +63,18 @@ dependencies {
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
 
+    // Reactor Netty
+    implementation "io.projectreactor.netty:reactor-netty-core"
+    implementation "io.projectreactor.netty:reactor-netty-http"
+
     constraints {
         compileOnly "org.projectlombok:lombok:${lombockVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombockVersion}"
 
         implementation "org.apache.httpcomponents:httpclient:${apacheHttpClientV4Version}"
+
+        implementation "io.projectreactor.netty:reactor-netty-core:${reactorNettyVersion}"
+        implementation "io.projectreactor.netty:reactor-netty-http:${reactorNettyVersion}"
     }
 }
 
@@ -86,7 +94,8 @@ task benchmark(dependsOn: 'embeddedServer') {
                 'JDKHttpAsyncClient',
                 'JDKHttpAsyncClientWithFixedThreadPoolTwo',
                 'ApacheHttpClientV4',
-                'OkHttpClientV4'
+                'OkHttpClientV4',
+                'ReactorNettyClient'
         ]
 
         clients.each { client ->
