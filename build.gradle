@@ -34,6 +34,7 @@ ext {
     jettyVersion = '11.0.0'
     lombockVersion = '1.18.16'
     apacheHttpClientV4Version = '4.5.13'
+    okHttpClientVersion = '4.9.0'
     reactorNettyVersion = '1.0.3'
 }
 
@@ -58,7 +59,7 @@ dependencies {
 
     // Ok http
     // define a BOM and its version
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:${okHttpClientVersion}"))
 
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
