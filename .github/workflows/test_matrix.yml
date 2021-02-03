@@ -1,6 +1,7 @@
 name: Test matrix
 
 on:
+  workflow_dispatch:
   schedule:
     # daily at 2:00 AM UTC
     - cron: "0 2 * * *"
