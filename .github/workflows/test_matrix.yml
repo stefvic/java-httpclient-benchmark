@@ -36,7 +36,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew -Pjava.version={{ matrix.java }}
+        run: ./gradlew -Pjava.version=${{ matrix.java }}
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
