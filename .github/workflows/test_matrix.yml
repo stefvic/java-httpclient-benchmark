@@ -42,6 +42,15 @@ jobs:
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        if: ${{ !startsWith(matrix.os, 'windows') }}
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Cleanup Gradle Cache on Windows
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        run: |
+          del /f  %HOMEDRIVE%%HOMEPATH%\.gradle\caches\modules-2\modules-2.lock
+          del /f  %HOMEDRIVE%%HOMEPATH%\.gradle\caches\modules-2\gc.properties
