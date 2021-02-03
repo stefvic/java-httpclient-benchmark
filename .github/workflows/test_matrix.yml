@@ -13,7 +13,7 @@ jobs:
         os: [ "ubuntu-20.04", "macos-10.15", "windows-2019" ]
         java: [ 11,12,13,14,15 ]
 
-    runs-on: {{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: {{ matrix.java }}
+          java-version: ${{ matrix.java }}
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
