@@ -52,5 +52,5 @@ jobs:
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
-          Remove-Item  $HOME\.gradle\caches\modules-2\modules-2.lock
-          Remove-Item  $HOME\.gradle\caches\modules-2\gc.properties
+          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2\modules-2.lock
+          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2\gc.properties
