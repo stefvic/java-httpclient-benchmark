@@ -10,8 +10,9 @@ jobs:
   benchmark:
     strategy:
       matrix:
-        os: [ ubuntu-20.04,macos-10.15,windows-2019 ]
+        os: [ "ubuntu-20.04", "macos-10.15", "windows-2019" ]
         java: [ 11,12,13,14,15 ]
+
     runs-on: {{ matrix.os }}
 
     steps:
