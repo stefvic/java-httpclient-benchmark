@@ -9,6 +9,7 @@ on:
 jobs:
   benchmark:
     strategy:
+      fail-fast: false
       matrix:
         os: [ "ubuntu-20.04", "macos-10.15", "windows-2019" ]
         java: [ 11,12,13,14,15 ]
@@ -33,10 +34,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew -Pjava.version=${{ matrix.java }}
+      - name: Run becnhamrk
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: -Pjava.version=${{ matrix.java }}
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
