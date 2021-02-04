@@ -37,7 +37,7 @@ jobs:
       - name: Run becnhamrk
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: -Pjava.version=${{ matrix.java }}
+          arguments: -Pjava.version=${{ matrix.java }} -Porg.gradle.daemon=false -Pbenchmark.requests=60000
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
