@@ -47,9 +47,9 @@ jobs:
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
-          $FileName=$HOME\.gradle\caches\modules-2\modules-2.lock
+          $FileName="$HOME\.gradle\caches\modules-2\modules-2.lock"
           Test-Path $FileName | Remove-Item $FileName
-          $FileName=$HOME\.gradle\caches\modules-2\gc.properties
+          $FileName="$HOME\.gradle\caches\modules-2\gc.properties"
           Test-Path $FileName | Remove-Item $FileName
 
       - name: Run becnhamrk
