@@ -34,12 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
-      - name: Run becnhamrk
-        uses: eskatos/gradle-command-action@v1
-        with:
-          arguments: -Pjava.version=${{ matrix.java }} -Porg.gradle.daemon=false -Pbenchmark.requests=60000
-
-      - name: Cleanup Gradle Cache
+      - name: Cleanup Gradle Lock Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         if: ${{ !startsWith(matrix.os, 'windows') }}
@@ -47,17 +42,17 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
-# TODO
-#  Line |
-#  2 |  Remove-Item -Force -Path $HOME\.gradle\caches\modules-2\modules-2.loc …
-#  |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  | The process cannot access the file 'C:\Users\runneradmin\.gradle\caches\modules-2\modules-2.lock'
-#  | because it is being used by another process.
-#
-#      - name: Cleanup Gradle Cache on Windows
-#        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-#        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-#        if: ${{ startsWith(matrix.os, 'windows') }}
-#        run: |
-#          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2\modules-2.lock
-#          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2\gc.properties
+      - name: Cleanup Gradle Lock Cache on Windows
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        run: |
+          $FileName=$HOME\.gradle\caches\modules-2\modules-2.lock
+          Test-Path $FileName | Remove-Item $FileName
+          $FileName=$HOME\.gradle\caches\modules-2\gc.properties
+          Test-Path $FileName | Remove-Item $FileName
+
+      - name: Run becnhamrk
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: -Pjava.version=${{ matrix.java }} -Pbenchmark.requests=60000
