@@ -30,4 +30,4 @@ jobs:
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
-          arguments: -Pjava.version=${{ matrix.java }} -Pbenchmark.requests=60000
+          arguments: -Pjava.version=${{ matrix.java }} -Pbenchmark.requests=40000 --no-daemon
