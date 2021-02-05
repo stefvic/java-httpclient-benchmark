@@ -78,7 +78,7 @@ final class BenchmarkRunner {
     private static void verifyBenchmarkAllRequestSucceed(BenchmarkConfig benchmarkConfig,
                                                          List<CompletableFuture<HttpClientResponse>> completedGets,
                                                          List<CompletableFuture<HttpClientResponse>> completedPosts) {
-        long expectedContentReceived = benchmarkConfig.getContentBytesSize() * benchmarkConfig.getRequests() * 2;
+        long expectedContentReceived = (long) benchmarkConfig.getContentBytesSize() * benchmarkConfig.getRequests() * 2;
         long completedGetSum = sumResponseBodyLength(completedGets);
         long completedPostSum = sumResponseBodyLength(completedPosts);
         var totalSum = completedGetSum + completedPostSum;

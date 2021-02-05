@@ -69,7 +69,9 @@ final class JDKHttpClientSupport {
     }
 
     private static long waitAsyncResponseTime(HttpClientContext httpClientContext) {
-        return httpClientContext.getSocketTimeoutMillis() + 2000;
+        return httpClientContext.getSocketTimeoutMillis() +
+            httpClientContext.getConnectTimeoutMillis() +
+            10000; //buffer
     }
 
 }

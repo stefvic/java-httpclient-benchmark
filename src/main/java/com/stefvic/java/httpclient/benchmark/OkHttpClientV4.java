@@ -20,11 +20,15 @@ public class OkHttpClientV4 implements HttpAgentClient {
         var concurrency = config.getConcurrency();
         dispatcher.setMaxRequestsPerHost(concurrency + 10);
         dispatcher.setMaxRequests(concurrency * 2);
+        var connectTimeout = Duration.ofMillis(config.getClientConnectTimeoutMillis());
+        var readTimeout = Duration.ofMillis(config.getClientSocketTimeoutMillis());
         this.client =
             new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
-                .connectTimeout(Duration.ofMillis(config.getClientConnectTimeoutMillis()))
-                .readTimeout(Duration.ofMillis(config.getClientSocketTimeoutMillis()))
+                .callTimeout(connectTimeout.plus(readTimeout).plus(Duration.ofSeconds(10)))
+                .connectTimeout(connectTimeout)
+                .readTimeout(readTimeout)
+                .writeTimeout(readTimeout)
                 .build();
     }
 
