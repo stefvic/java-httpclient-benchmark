@@ -47,8 +47,8 @@ jobs:
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
-          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2 -Include modules-2.lock* -Verbose
-          Remove-Item -Force -Path $HOME\.gradle\caches\modules-2 -Include gc.properties* -Verbose
+          Remove-Item -Force -Path ~\.gradle\caches\modules-2 -Include modules-2.lock* -Verbose
+          Remove-Item -Force -Path ~\.gradle\caches\modules-2 -Include gc.properties* -Verbose
 
       - name: Run becnhamrk
         uses: eskatos/gradle-command-action@v1
