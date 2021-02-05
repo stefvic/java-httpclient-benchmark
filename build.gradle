@@ -34,7 +34,7 @@ ext {
     jettyVersion = '11.0.0'
     lombockVersion = '1.18.16'
     apacheHttpClientV4Version = '4.5.13'
-    okHttpClientVersion = '4.9.0'
+    okHttpClientVersion = '4.9.1'
     reactorNettyVersion = '1.0.3'
 }
 
