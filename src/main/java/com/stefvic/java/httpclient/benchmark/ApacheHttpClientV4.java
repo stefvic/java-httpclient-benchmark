@@ -24,7 +24,7 @@ public class ApacheHttpClientV4 implements HttpAgentClient {
         var soTimeoutMillis = benchmarkConfig.getClientSocketTimeoutMillis();
         var connectTimeoutMillis = benchmarkConfig.getClientConnectTimeoutMillis();
         this.client = HttpClientBuilder.create()
-                                       .setMaxConnPerRoute(concurrency)
+                                       .setMaxConnPerRoute(concurrency + 10)
                                        .setMaxConnTotal(concurrency * 2)
                                        .setDefaultSocketConfig(
                                            SocketConfig.custom()

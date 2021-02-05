@@ -5,6 +5,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.Duration;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -15,8 +16,13 @@ public class OkHttpClientV4 implements HttpAgentClient {
     private final OkHttpClient client;
 
     public OkHttpClientV4(BenchmarkConfig config) {
+        var dispatcher = new Dispatcher();
+        var concurrency = config.getConcurrency();
+        dispatcher.setMaxRequestsPerHost(concurrency + 10);
+        dispatcher.setMaxRequests(concurrency * 2);
         this.client =
             new OkHttpClient.Builder()
+                .dispatcher(dispatcher)
                 .connectTimeout(Duration.ofMillis(config.getClientConnectTimeoutMillis()))
                 .readTimeout(Duration.ofMillis(config.getClientSocketTimeoutMillis()))
                 .build();
